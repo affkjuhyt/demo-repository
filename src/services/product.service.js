@@ -8,8 +8,6 @@ export const queryProducts = async (req) => {
 
   const products = await apiFeatures(req, Product, populateQuery);
 
-  console.log('products: ', products)
-
   if (!products) {
     return {
       type: 'Error',
@@ -27,7 +25,6 @@ export const queryProducts = async (req) => {
 }
 
 export const createProduct = async (body) => {
-  console.log('body: ', body);
   const { name, slug, description } = body;
 
   if (

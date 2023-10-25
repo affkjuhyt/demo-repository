@@ -25,7 +25,7 @@ export const signin = async (req, res) => {
 
 export const signup = async (req, res) => {
     // calling auth service
-    const { type, message, statusCode, user, tokens } = authService.signup(
+    const { type, message, statusCode, user, tokens } = await authService.signup(
         req.body
     );
 
@@ -37,10 +37,10 @@ export const signup = async (req, res) => {
             tokens
         });
     }
-    
+
     return res.status(statusCode).json({
         type,
-        message: 'Success',
+        message: message,
         user,
         tokens
     });

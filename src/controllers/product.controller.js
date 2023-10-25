@@ -13,7 +13,6 @@ export const getAllProducts = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   // create product
-  console.log('request is: ', req);
   const body = req.body;
 
   const {type, message, statusCode, product} = await productService.createProduct(body);

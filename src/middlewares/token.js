@@ -20,7 +20,6 @@ export const generateToken = (
 };
 
 export const saveToken = async (token, userId, expires, type) => {
-    console.log('expires: ', expires);
     const tokenDoc = await Token.create({
         token,
         user: userId,
@@ -75,7 +74,6 @@ export const generateAuthTokens = async (user) => {
         tokenTypes.REFRESH
     );
 
-    console.log('saveToken ')
     await saveToken(
         accessToken,
         user.id,

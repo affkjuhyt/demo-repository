@@ -33,7 +33,6 @@ export const signin = async (email, password) => {
 }
 
 export const signup = async (body) => {
-    console.log('body is: ', body);
     const { name, username, email, password } = body;
 
     if (!name || !username || !email || !password) {
@@ -43,7 +42,6 @@ export const signup = async (body) => {
             statusCode: 400
         };
     }
-
     if (password.length < 8) {
         return {
             type: 'Error',
@@ -52,15 +50,15 @@ export const signup = async (body) => {
         }
     }
 
-    // const isEmailTaken = await User.isEmailTaken(email);
+    const isEmailTaken = await User.isEmailTaken(email);
 
-    // if (isEmailTaken) {
-    //     return {
-    //         type: 'Error',
-    //         message: 'emailToken',
-    //         statusCode: 409
-    //     }
-    // }
+    if (isEmailTaken) {
+        return {
+            type: 'Error',
+            message: 'emailToken',
+            statusCode: 409
+        }
+    }
 
     const user = await User.create({
         name,
@@ -69,15 +67,14 @@ export const signup = async (body) => {
         password,
     });
 
-    console.log('generateToken: ')
     const tokens = await generateAuthTokens(user);
 
-    // user.password = undefined;
+    user.password = undefined;
 
     return {
         type: 'Success',
-        statusCode: 201,
         message: 'successSignUp',
+        statusCode: 201,
         user,
         tokens
     }
