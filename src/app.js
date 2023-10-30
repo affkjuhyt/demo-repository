@@ -5,6 +5,7 @@ import cors from 'cors';
 import routes from './routes/index.js';
 import config from './config/config.js';
 import limiter from './middlewares/rateLimiter.js';
+import errorHandler from './utils/errorHandler.js';
 
 const app = express();
 
@@ -18,5 +19,8 @@ if (config.env === 'production') {
 }
 
 app.use('/api' , routes);
+
+// Error Handler
+app.use(errorHandler);
 
 export default app;

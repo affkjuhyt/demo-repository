@@ -1,6 +1,23 @@
 import User from '../models/user.model.js';
 
+import bcrypt from 'bcrypt';
 import { generateAuthTokens } from '../middlewares/token.js';
+
+const saltRounds = 10;
+
+const checkPassword = async (user, password) => {
+    try {
+        const result = await bcrypt.compare(password, user.password);
+        if (result) {
+            return null;
+        } else {
+            return 'Password not match'
+        }
+    } catch (err) {
+        return err.message;
+    }
+}
+
 
 export const signin = async (email, password) => {
     if (!email || !password) {
@@ -12,6 +29,17 @@ export const signin = async (email, password) => {
     }
 
     const user = await User.findOne({ email }).select('+password');
+    const result = await checkPassword(user, password);
+
+    console.log('user: ', result);
+
+    if (result) {
+        return {
+            type: 'Error',
+            statusCode: 401,
+            message: result
+        }
+    }
 
     if (!user) {
         return {
@@ -22,6 +50,8 @@ export const signin = async (email, password) => {
     }
 
     const tokens = await generateAuthTokens(user);
+
+    user.password = undefined
 
     return {
         type: 'Success',
@@ -60,16 +90,32 @@ export const signup = async (body) => {
         }
     }
 
+    // let newPassword = "";
+
+    // Ma hoa MK
+    // bcrypt.hash(password, 10, (err, hashedPassword) => {
+    //     if (err) {
+    //         console.log('Ma hoa loi')
+    //     }
+    //     newPassword = hashedPassword;
+    // })
+
+    const salt = await bcrypt.genSalt(saltRounds);
+
+    const hash = await bcrypt.hash(password, salt);
+
+    console.log('hash: ', hash);
+
     const user = await User.create({
         name,
         username,
         email,
-        password,
+        password: hash,
     });
 
     const tokens = await generateAuthTokens(user);
 
-    user.password = undefined;
+    // user.password = undefined;
 
     return {
         type: 'Success',
