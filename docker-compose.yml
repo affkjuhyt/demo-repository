@@ -1,0 +1,24 @@
+version: '3.6'
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+     - 3000:3000
+    image: demo
+    stdin_open: true
+
+  mongodb:
+    image: mongo
+    restart: always
+    ports:
+     - 27017:27017
+    volumes:
+      - db:/data/new/mongodb
+    stdin_open: true
+    tty: true
+
+volumes:
+  db:
